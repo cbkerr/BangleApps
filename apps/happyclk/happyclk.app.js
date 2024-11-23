@@ -122,7 +122,7 @@ let quadraticCurve = function(t, p0x, p0y, p1x, p1y, p2x, p2y){
       x: p0x * oneMinT2 + 2 * p1x * t * oneMinT + p2x *t2,
       y: p0y * oneMinT2 + 2 * p1y * t * oneMinT + p2y *t2
     };
-}
+};
 
 // Thanks to user stephaneAG from the Espruino forum!
 // https://forum.espruino.com/conversations/330154/#comment14593349
@@ -142,7 +142,7 @@ let drawCurve = function(x1, y1, x2, y2, x3, y3){
         g.drawPoly(pathPts, false);
     }
     g.flip();
-}
+};
 
 
 /*
@@ -167,7 +167,7 @@ let drawEyes = function(){
     g.setColor(g.theme.fg);
     drawHour(h);
     drawMinute(m);
-}
+};
 
 
 let drawSmile = function(isLocked){
@@ -184,7 +184,7 @@ let drawSmile = function(isLocked){
         if(isLocked) g.drawLine(25, y+6+i, 35, y-5+i);
         if(reachedSteps) g.drawLine(W-35, y+5+i, W-45, y-5+i);
     }
-}
+};
 
 let drawEyeBrow = function(){
     if(!isFullscreen()) return;
@@ -195,7 +195,7 @@ let drawEyeBrow = function(){
         g.drawLine(25, 25+i, 70, 15+i%3);
         g.drawLine(W-25, 28+i%3, W-68, 19+i);
     }
-}
+};
 
 
 let drawWidgets = function(){
@@ -204,7 +204,7 @@ let drawWidgets = function(){
     } else {
         Bangle.drawWidgets();
     }
-}
+};
 
 
 
@@ -214,7 +214,7 @@ let draw = function() {
 
     var isLocked = Bangle.isLocked();
     drawHelper(isLocked);
-}
+};
 
 let drawHelper = function(isLocked) {
     g.setColor(g.theme.bg);
@@ -227,7 +227,7 @@ let drawHelper = function(isLocked) {
     drawSmile(isLocked);
 
     drawWidgets();
-}
+};
 
 
 /*
@@ -242,7 +242,7 @@ let onLCDPower = function(on) {
         //drawTimeout = undefined;
     }
 };
-Bangle.on('lcdPower', onLCDPower)
+Bangle.on('lcdPower', onLCDPower);
 
 let onLock = function(isLocked) {
     //if (drawTimeout) clearTimeout(drawTimeout);
@@ -269,7 +269,7 @@ let queueDraw = function() {
       drawTimeout = undefined;
       draw();
     }, 60000 - (Date.now() % 60000));
-}
+};
 
 
 /*
@@ -282,7 +282,7 @@ Bangle.setUI({
     if (drawTimeout) {
       clearTimeout(drawTimeout);
     }
-    delete Graphics.prototype.drawPupils
+    delete Graphics.prototype.drawPupils;
     Bangle.removeListener('lcdPower', onLCDPower);
     Bangle.removeListener('lock', onLock);
     g.setTheme(originalTheme);
