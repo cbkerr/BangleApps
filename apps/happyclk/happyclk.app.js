@@ -1,8 +1,7 @@
 /************************************************
  * Happy Clock
  */
-
-
+{
 const storage = require('Storage');
 const widget_utils = require("widget_utils");
 
@@ -22,7 +21,7 @@ for (const key in saved_settings) {
     settings[key] = saved_settings[key];
 }
 
-var color_map = {
+let color_map = {
     "Dark":{
         fg: "#fff",
         bg: "#000",
@@ -72,14 +71,14 @@ var color_map = {
         eyePupils: "#000"
     }
 };
-var colors = color_map[settings.color];
+let colors = color_map[settings.color];
 
 /************************************************
  * Globals
  */
-var W = g.getWidth();
-var H = g.getHeight();
-var drawTimeout;
+let W = g.getWidth();
+let H = g.getHeight();
+let drawTimeout;
 
 
 /*
@@ -209,7 +208,7 @@ let drawWidgets = function(){
 
 
 
-let draw = function(){
+let draw = function() {
     // Queue draw in one minute
     queueDraw();
 
@@ -217,7 +216,7 @@ let draw = function(){
     drawHelper(isLocked);
 }
 
-let drawHelper = function(isLocked){
+let drawHelper = function(isLocked) {
     g.setColor(g.theme.bg);
 
     g.fillRect(0, isFullscreen() ? 0 : 24, W, H);
@@ -234,18 +233,20 @@ let drawHelper = function(isLocked){
 /*
  * Listeners
  */
-Bangle.on('lcdPower',on=>{
+
+let onLCDPower = function(on) {
     if (on) {
         draw();
     } else { // stop draw timer
-        if (drawTimeout) clearTimeout(drawTimeout);
-        drawTimeout = undefined;
+        //if (drawTimeout) clearTimeout(drawTimeout);
+        //drawTimeout = undefined;
     }
-});
+};
+Bangle.on('lcdPower', onLCDPower)
 
-Bangle.on('lock', function(isLocked) {
-    if (drawTimeout) clearTimeout(drawTimeout);
-    drawTimeout = undefined;
+let onLock = function(isLocked) {
+    //if (drawTimeout) clearTimeout(drawTimeout);
+    //drawTimeout = undefined;
 
     if(!isLocked && settings.screen.toLowerCase() == "dynamic"){
         // If we have to show the widgets again, we load it from our
@@ -253,8 +254,10 @@ Bangle.on('lock', function(isLocked) {
         widget_utils.show();
     }
 
-    draw(isLocked);
-});
+    draw();
+};
+
+Bangle.on('lock', onLock);
 
 
 /*
@@ -273,12 +276,27 @@ let queueDraw = function() {
  * Lets start widgets, listen for btn etc.
  */
 // Show launcher when middle button pressed
-Bangle.setUI("clock");
+Bangle.setUI({
+  mode: "clock",
+  remove: function() {
+    if (drawTimeout) {
+      clearTimeout(drawTimeout);
+    }
+    delete Graphics.prototype.drawPupils
+    Bangle.removeListener('lcdPower', onLCDPower);
+    Bangle.removeListener('lock', onLock);
+    g.setTheme(originalTheme);
+    widget_utils.show();
+  }});
+
 Bangle.loadWidgets();
 
 // Clear the screen once, at startup and draw clock
+let originalTheme = g.theme;
+
 g.setTheme({bg:colors.bg,fg:colors.fg,dark:false});
 draw();
 
+}
 // After drawing the watch face, we can draw the widgets
 // Bangle.drawWidgets();
