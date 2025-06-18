@@ -118,6 +118,30 @@ exports.load = function() {
         }
         hrm = 0;
       },
+    },
+    { name: "BLE",
+      hasRange: false,
+      isOn: () => {
+        const s = NRF.getSecurityStatus();
+        return s.advertising || s.connected;
+      },
+      get: function() {
+        return {
+          text: this.isOn() ? "On" : "Off",
+          img: atob("GBiBAAAAAAAAAAAYAAAcAAAWAAATAAARgAMRgAGTAADWAAB8AAA4AAA4AAB8AADWAAGTAAMRgAARgAATAAAWAAAcAAAYAAAAAAAAAA==")
+        };
+      },
+      run: function() {
+        if (this.isOn()) {
+          NRF.sleep();
+        } else {
+          NRF.wake();
+          Bluetooth.setConsole(1);
+        }
+        setTimeout(() => this.emit("redraw"), 250);
+      },
+      show: function(){},
+      hide: function(){},
     }
   ],
   }];
@@ -283,7 +307,7 @@ exports.addInteractive = function(menu, options) {
         //in the worst case we come back to 0
       } while(menu[options.menuA].items.length==0);
       // When we change, ensure we don't display the same thing as another clockinfo if we can avoid it
-      while ((options.menuB < menu[options.menuA].items.length) &&
+      while ((options.menuB < menu[options.menuA].items.length-1) &&
              exports.clockInfos.some(m => (m!=options) && m.menuA==options.menuA && m.menuB==options.menuB))
           options.menuB++;
     }
