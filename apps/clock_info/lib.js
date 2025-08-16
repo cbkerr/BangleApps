@@ -333,8 +333,10 @@ exports.addInteractive = function(menu, options) {
       redraw = false;
     if (redraw) options.redraw();
   };
-  // better to only call blur when we know it's focused. Maybe we can rename force_blur to ensure_blur.
-  options.force_blur = blur;
+  // better to only call blur when we know it's focused. Could reuse this logic in this file
+  options.ensure_blur = () => {
+    if (options.focus) blur()
+  }
   const focus = () => {
     let redraw = true;
     Bangle.CLKINFO_FOCUS = (0 | Bangle.CLKINFO_FOCUS) + 1;
