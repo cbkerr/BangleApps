@@ -1,6 +1,5 @@
 (() => {
   if (!require("clock_info").loadCount) { // don't load if a clock_info was already loaded
-  //WIDGETS = {};
   const clock_info = require("clock_info");
 
   WIDGETS["clkinfo"] = {
@@ -18,7 +17,7 @@
       x: 0,
       y: 0, // TODO how know if offscreen to start?
       w: 72,
-      h: 24,
+      h: 23, // workaround off by one error in clock_info
       // You can add other information here you want to be passed into 'options' in 'draw'
       // This function draws the info
       draw: (itm, info, options) => {
@@ -92,11 +91,3 @@
     }
   });
 }})()
-
-/*
-const widget_utils = require("widget_utils");
-g.clear();
-Bangle.loadWidgets();
-widget_utils.swipeOn();
-Bangle.drawWidgets();
-*/
